@@ -5,5 +5,6 @@
     <color name="colorAccent">#00BCD4</color>
     <color name="secondaryText">#757575</color>
     <color name="white">#ffff</color>
-    <color name="message_background">#EEDBCECE</color>
+    <color name="message_background">#EEDBD7D7</color>
+    <color name="black_message">#000000</color>
 </resources>

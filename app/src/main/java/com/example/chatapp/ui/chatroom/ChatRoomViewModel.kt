@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.chatapp.models.Message
 import com.example.chatapp.models.User
+import com.example.chatapp.ui.chatroom.chatStatus.*
 import com.example.chatapp.utils.Firebase
 import com.example.chatapp.utils.Firebase.auth
 import com.example.chatapp.utils.Firebase.messagesRef
@@ -60,17 +61,15 @@ class ChatRoomViewModel : ViewModel() {
                 }
             }
         }
-
     }
 
-
     private fun getMessages() {
-        _status.value = chatStatus.LOADING
+        _status.value = LOADING
         messagesRef
             .orderBy("timestamp", Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
-                    _status.value = chatStatus.ERROR
+                    _status.value = ERROR
                     println("Error retrieving messages ${e.message}")
                 } else {
                     snapshot?.let {
@@ -81,6 +80,7 @@ class ChatRoomViewModel : ViewModel() {
                             //println(message.toString())
                             list.add(message!!)
                         }
+                        _status.value = SUCCESS
                         _messages.value = list
                     }
                 }

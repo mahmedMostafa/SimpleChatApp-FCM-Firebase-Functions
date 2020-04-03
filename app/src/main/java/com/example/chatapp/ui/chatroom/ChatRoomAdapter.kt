@@ -1,5 +1,6 @@
 package com.example.chatapp.ui.chatroom
 
+import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ class ChatRoomAdapter(
                         Gravity.END
                     )
                     this.layoutParams = params
+                    text.setTextColor(Color.parseColor("#FFFFFFFF"))
                 }
             } else {
                 itemView.root.apply {
@@ -60,6 +62,7 @@ class ChatRoomAdapter(
                         Gravity.START
                     )
                     this.layoutParams = params
+                    text.setTextColor(Color.parseColor("#000000"))
                 }
             }
             text.text = message.text

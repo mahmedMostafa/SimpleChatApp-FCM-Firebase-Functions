@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.sign_in_fragment.*
 import kotlinx.android.synthetic.main.sign_in_fragment.progress_bar
 import kotlinx.android.synthetic.main.sign_in_fragment.sign_up_button
 
-class RegisterFragment : Fragment(R.layout.register_fragment) {
+class RegisterFragment : Fragment(R.layout.register_fragment), View.OnClickListener {
+
 
     private val viewModel: RegisterViewModel by lazy {
         ViewModelProvider(this).get(RegisterViewModel::class.java)
@@ -27,15 +28,23 @@ class RegisterFragment : Fragment(R.layout.register_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        register_register_button.setOnClickListener(this)
+        subscribeToObservers()
+    }
 
-        register_register_button.setOnClickListener {
-            viewModel.signUp(
-                register_email_edit_text.text.toString().trim(),
-                register_password_edit_text.text.toString().trim(),
-                name_edit_text.text.toString().trim()
-            )
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.register_register_button -> {
+                viewModel.signUp(
+                    register_email_edit_text.text.toString().trim(),
+                    register_password_edit_text.text.toString().trim(),
+                    name_edit_text.text.toString().trim()
+                )
+            }
         }
+    }
 
+    private fun subscribeToObservers() {
         viewModel.status.observe(viewLifecycleOwner, Observer { status ->
             status?.let {
                 when (it) {

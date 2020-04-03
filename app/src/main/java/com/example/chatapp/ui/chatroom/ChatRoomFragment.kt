@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,13 +27,11 @@ class ChatRoomFragment : Fragment(R.layout.chat_room_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // messages.add(Message("Hello there", "asd"))
-        viewModel.addUserToChatRoom()
+        subscribeToObservers()
+        setupRecyclerView()
+    }
 
-        viewModel.messages.observe(viewLifecycleOwner, Observer { messages ->
-            this.messages = messages as MutableList<Message>
-            adapter.setMessages(messages as MutableList<Message>)
-        })
+    private fun setupRecyclerView() {
 
         adapter = ChatRoomAdapter(messages)
         recycler_view.layoutManager = LinearLayoutManager(activity!!)
@@ -44,5 +43,28 @@ class ChatRoomFragment : Fragment(R.layout.chat_room_fragment) {
             Util.hideKeyboard(activity!!)
             recycler_view.smoothScrollToPosition(messages.size - 1)
         }
+    }
+
+    private fun subscribeToObservers() {
+        // messages.add(Message("Hello there", "asd"))
+        viewModel.addUserToChatRoom()
+
+        viewModel.messages.observe(viewLifecycleOwner, Observer { messages ->
+            this.messages = messages as MutableList<Message>
+            adapter.setMessages(messages)
+        })
+
+        viewModel.status.observe(viewLifecycleOwner, Observer { status ->
+            status?.let {
+                when (it) {
+                    chatStatus.SUCCESS -> progress_bar.visibility = View.INVISIBLE
+                    chatStatus.LOADING -> progress_bar.visibility = View.VISIBLE
+                    chatStatus.ERROR -> {
+                        progress_bar.visibility = View.INVISIBLE
+                        Toast.makeText(activity!!, "Something wen Wrong", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
     }
 }

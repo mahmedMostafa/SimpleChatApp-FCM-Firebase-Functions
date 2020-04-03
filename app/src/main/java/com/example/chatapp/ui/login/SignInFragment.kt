@@ -15,7 +15,8 @@ import com.example.chatapp.ui.login.status.*
 import kotlinx.android.synthetic.main.sign_in_fragment.*
 
 
-class SignInFragment : Fragment(R.layout.sign_in_fragment) {
+class SignInFragment : Fragment(R.layout.sign_in_fragment), View.OnClickListener {
+
 
     private val viewModel: SignInViewModel by lazy {
         ViewModelProvider(this).get(SignInViewModel::class.java)
@@ -23,22 +24,36 @@ class SignInFragment : Fragment(R.layout.sign_in_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //i don't think this is the best solution but it works fine
+        // a splash would have covered that nicely
         if (viewModel.isLoggedInAlready()) {
             this.findNavController().navigate(
                 SignInFragmentDirections.actionSignInFragmentToChatRoomFragment()
             )
         }
-        login_button.setOnClickListener {
-            viewModel.loginUser(
-                email_edit_text.text.toString().trim(),
-                password_edit_text.text.toString().trim()
-            )
+        login_button.setOnClickListener(this)
+        sign_up_button.setOnClickListener(this)
+        subscribeToObservers()
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+
+            R.id.login_button -> {
+                viewModel.loginUser(
+                    email_edit_text.text.toString().trim(),
+                    password_edit_text.text.toString().trim()
+                )
+            }
+            R.id.sign_up_button -> {
+                this.findNavController().navigate(
+                    SignInFragmentDirections.actionSignInFragmentToRegisterFragment()
+                )
+            }
         }
-        sign_up_button.setOnClickListener {
-            this.findNavController().navigate(
-                SignInFragmentDirections.actionSignInFragmentToRegisterFragment()
-            )
-        }
+    }
+
+    private fun subscribeToObservers() {
         viewModel.status.observe(viewLifecycleOwner, Observer { status ->
             status?.let {
                 when (it) {
